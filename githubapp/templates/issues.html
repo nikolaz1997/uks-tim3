@@ -5,34 +5,20 @@
   <div class="invisible-container">
     <div class="invisible-container-left">
       <div class="filters">
-        <button
-          class="filters-content active-filter-button"
-          style="border-width: 0; background-color: #2d333b"
+        <a href="issues/" class="filters-content filters-content-active"
+          >Created</a
         >
-          Created
-        </button>
-        <button
-          class="filters-content"
-          style="
-            border-width: 0;
-            border-left: 1px solid #444c56;
-            background-color: #2d333b;
-          "
-        >
-          Assigned
-        </button>
-        <button
-          class="filters-content"
-          style="
-            border-width: 0;
-            background-color: #2d333b;
-            border-left: 1px solid #444c56;
-          "
-        >
-          Mentioned
-        </button>
+        <a href="issues/" class="filters-content"> Assigned </a>
+        <a href="issues/" class="filters-content"> Mentioned </a>
       </div>
-      <input type="text" class="issue-search" placeholder="Search all issues" />
+      <form>
+        <input
+          name="search-issues"
+          type="text"
+          class="issue-search"
+          placeholder="Search all issues"
+        />
+      </form>
     </div>
   </div>
   <div class="issues-container">
@@ -93,7 +79,7 @@
           {% endfor %}
         </div>
         <div class="issue-desc">
-          #{{ issue.id }} opened on {{ issue.created_at }} by {{user.username}}
+          #{{ issue.id }} opened on {{ issue.created_at }} by {{issue.creator}}
         </div>
       </div>
       {% endfor %}
@@ -137,5 +123,5 @@
     </div>
   </div>
 </div>
-<script src="{% static 'js/issues.js' %}"></script>
+<script src="{% static 'js/issues.js' %}" defer></script>
 {% endblock %}

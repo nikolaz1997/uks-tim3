@@ -30,17 +30,34 @@
 
 .filters {
   height: 30px;
-  background-color: #2d333b;
-  border: 1px solid #444c56;
+  background-color: #1c2128;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+}
+
+.filters-content:hover {
+  background-color: #2d333b;
+}
+
+.filters-content:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.filters-content:nth-child(3) {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.filters-content:nth-child(4) {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 .filters-content {
-  background-color: #2d333b;
+  background-color: #1c2128;
   align-items: center;
   font-size: 14px;
   padding: 5px 16px;
@@ -48,6 +65,22 @@
   color: #adbac7;
   display: flex;
   flex-direction: row;
+  border: 1px solid #444c56;
+}
+
+.filters-content-active {
+  background-color: #316dca;
+  border-color: #316dca;
+}
+
+.filters-content-active:hover {
+  background-color: #316dca !important;
+  border-color: #316dca;
+}
+
+.filters-content:hover {
+  background-color: #2d333b;
+  cursor: pointer;
 }
 
 .arrow-down {

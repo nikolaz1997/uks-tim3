@@ -5,48 +5,19 @@
   <div class="invisible-container">
     <div class="invisible-container-left">
       <div class="filters">
-        <button
-          class="filters-content active-filter-button"
-          style="border-width: 0; background-color: #2d333b"
-        >
-          Created
-        </button>
-        <button
-          class="filters-content"
-          style="
-            border-width: 0;
-            border-left: 1px solid #444c56;
-            background-color: #2d333b;
-          "
-        >
-          Assigned
-        </button>
-        <button
-          class="filters-content"
-          style="
-            border-width: 0;
-            background-color: #2d333b;
-            border-left: 1px solid #444c56;
-          "
-        >
-          Mentioned
-        </button>
-        <button
-          class="filters-content"
-          style="
-            border-width: 0;
-            background-color: #2d333b;
-            border-left: 1px solid #444c56;
-          "
-        >
-          Review requests
-        </button>
+        <a class="filters-content filters-content-active">Created</a>
+        <a class="filters-content">Assigned</a>
+        <a class="filters-content" style="border-radius: 0">Mentioned</a>
+        <a class="filters-content">Review requests</a>
       </div>
-      <input
-        type="text"
-        class="issue-search"
-        placeholder="Search all pull requests"
-      />
+      <form>
+        <input
+          name="search-issues"
+          type="text"
+          class="issue-search"
+          placeholder="Search all issues"
+        />
+      </form>
     </div>
   </div>
   <div class="issues-container">
@@ -88,7 +59,7 @@
             height="16"
           />
           <a href="#" class="issue-heading">
-            { { pull.base.repository.title }}&nbsp;
+            {{ pull.base.repository.title }}&nbsp;
           </a>
           <a href="#" class="issue-heading issue-heading-muted">
             {{ pull.title }}
@@ -102,7 +73,8 @@
           {% endfor %}
         </div>
         <div class="issue-desc">
-          #{{ pull.id }} opened on {{ pull.created_at }} by {{user.username}}
+          #{{ pull.id }} opened on {{ pull.created_at }} by
+          {{pull.creator.username}}
         </div>
       </div>
       {% endfor %}

@@ -5,13 +5,13 @@ from app_models.pull_request import PullRequest
 from app_models.label import Label
 from app_models.enums import IssueStatus
 from app_models.enums import PullRequestStatus
+from django.db.models import Value, IntegerField
 
 from user_auth.forms import SignInForm
 from .forms import UserForm
 from app_models.models import User
 
 from django.contrib.contenttypes.models import ContentType
-
 
 
 def index(request):
@@ -67,32 +67,87 @@ def edit_profile(request):
      
 def issues(request):
     user = request.user
-    issues = Issue.objects.filter(creator__id=user.id).all()
-    opened_issues = list(filter(lambda issue: issue.state == IssueStatus.OPENED, issues))
-    closed_issues = list(filter(lambda issue: issue.state == IssueStatus.CLOSED, issues))
+    query = request.GET.get('search-issues')
+    
+    filterMap = getFilterMap(query)
+    filters = getObjectFilters(filterMap)
 
-    # Get labels for each issue
+    objects = getFilteredQuerySet(Issue.objects, filters).all()
+    opened_issues = list(filter(lambda issue: issue.state.value == 'OPENED', objects))
+    closed_issues = list(filter(lambda issue: issue.state.value == 'CLOSED', objects))
+
+    return render(request, 
+        'issues.html', 
+        {   
+            'user': user, 
+            'opened_issues': opened_issues, 
+            "opened_issues_num": len(opened_issues), 
+            "closed_issues": closed_issues, 
+            "closed_issues_num": len(closed_issues),
+            "is_opened": filterMap.get('is') == 'opened'
+        })
+
+def pulls(request):
+    user = request.user
+    query = request.GET.get('search-issues')
+    
+    filterMap = getFilterMap(query)
+    filters = getObjectFilters(filterMap)
+
+    objects = getFilteredQuerySet(PullRequest.objects, filters).all()
+    opened_pulls = list(filter(lambda issue: issue.state.value == 'OPENED', objects))
+    closed_pulls = list(filter(lambda issue: issue.state.value == 'CLOSED', objects))
+    
+    return render(request, 
+        'pull_requests.html', 
+        {   
+            'user': user, 
+            'opened_pulls': opened_pulls, 
+            "opened_pulls_num": len(opened_pulls), 
+            "closed_pulls": closed_pulls, 
+            "closed_pulls_num": len(closed_pulls),
+            "is_opened": filterMap.get('is') == 'opened'
+        })
+
+
+def getFilterMap(query):
+    filterMap = {}
+    if query != None:
+        query_array = query.split(' ')
+
+        for item in query_array:
+            params = item.split(':')
+            if params[0] == "is":
+                if params[1] == 'pr' or params[1] == 'issue':
+                    filterMap['type'] = params[1]
+            if params[0] == 'author':
+                filterMap['creator__username'] = params[1]
+            if params[0] == 'assignee':
+                filterMap['asignee__username'] = params[1]
+    
+    return filterMap
+
+def getObjectFilters(filterMap):
+    filters = []
+    for key in filterMap:
+        filters.append({ 'key': key, 'value': filterMap.get(key)})
+    return filters
+        
+
+def getFilteredQuerySet(objectType, filters):
+    querySet = objectType
+    for filter in filters:
+        filtered_by = filter['key']
+        filter_value = filter['value']
+        querySet = querySet.filter(**{filtered_by: filter_value})
+
+    return querySet
+
+    
+def getLabels(issues):
     for issue in issues:
         content_type = ContentType.objects.get_for_model(Label)
         model_class = content_type.model_class()
 
         labels = model_class.objects.filter(pk=issue.id).all()
         issue.labels = labels
-
-    return render(request, 'issues.html', {'user': user, 'opened_issues': opened_issues, "opened_issues_num": len(opened_issues), "closed_issues": closed_issues, "closed_issues_num": len(closed_issues)})
-
-def pulls(request):
-    user = request.user
-    pulls = PullRequest.objects.filter(creator__id=user.id).all()
-    opened_pulls = list(filter(lambda pull: pull.state == PullRequestStatus.OPENED, pulls))
-    closed_pulls = list(filter(lambda pull: pull.state == PullRequestStatus.CLOSED, pulls))
-
-    # Get labels for each pull request
-    for pull in pulls:
-        content_type = ContentType.objects.get_for_model(Label)
-        model_class = content_type.model_class()
-
-        labels = model_class.objects.filter(pk=pull.id).all()
-        pull.labels = labels
-
-    return render(request, 'pull_requests.html', {'user': user, 'opened_pulls': opened_pulls, "opened_pulls_num": len(opened_pulls), "closed_pulls": closed_pulls, "closed_pulls_num": len(closed_pulls)})      
