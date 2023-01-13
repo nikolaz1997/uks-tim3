@@ -13,3 +13,5 @@ class Issue(BaseModel):
     state = EnumField(IssueStatus, default=IssueStatus.OPENED)
     repository = models.ForeignKey(Repository, on_delete=models.CASCADE)
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.CharField(max_length=30, default='issue')
+    assignee: models.ForeignKey(User, on_delete=models.DO_NOTHING)

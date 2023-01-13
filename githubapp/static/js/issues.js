@@ -18,3 +18,12 @@ openedIssueButton.addEventListener("click", function (e) {
   closed_issues.style.display = "none";
   closedIssueButton.classList.remove("active");
 });
+
+document
+  .querySelector("input[name='search-issues']")
+  .addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      document.querySelector("form").submit();
+    }
+  });

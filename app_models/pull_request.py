@@ -16,3 +16,5 @@ class PullRequest(BaseModel):
     compare = models.ForeignKey(
         Branch, on_delete=models.CASCADE, related_name='compare_branch')
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.CharField(max_length=30, default='pr')
+    assignee: models.ForeignKey(User, on_delete=models.DO_NOTHING)

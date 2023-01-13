@@ -2,15 +2,15 @@ from enumfields import Enum
 
 
 class PullRequestStatus(Enum):
-    OPENED = 1
-    CLOSED = 2
-    DRAFT = 3
-    MERGED = 4
+    OPENED = 'OPENED'
+    CLOSED = 'CLOSED'
+    DRAFT = 'DRAFT'
+    MERGED = 'MERGED'
 
 
 class IssueStatus(Enum):
-    OPENED = 1
-    CLOSED = 2
+    OPENED = 'OPENED'
+    CLOSED = 'CLOSED'
 
 
 class ReactionType(Enum):
@@ -24,6 +24,6 @@ class MilestoneState(Enum):
 
 
 class PullRequestActions(Enum):
-    OPENED = 1,
-    CLOSED = 2,
-    APPROVED = 3,
+    OPENED = 'OPENED',
+    CLOSED = 'CLOSED',
+    APPROVED = 'APPROVED',
